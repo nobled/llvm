@@ -1394,18 +1394,18 @@ void CppWriter::printInstruction(const Instruction *I,
         Out << iName << "_params.push_back(" << opNames[i] << ");";
         nl(Out);
       }
-      Out << "CallInst* " << iName << " = CallInst::Create("
+      Out << "CallInst *" << iName << " = " << BuilderName << ".CreateCall("
           << opNames[call->getNumArgOperands()] << ", "
-          << iName << "_params, \"";
-    } else if (call->getNumArgOperands() == 1) {
-      Out << "CallInst* " << iName << " = CallInst::Create("
-          << opNames[call->getNumArgOperands()] << ", " << opNames[0] << ", \"";
+          << iName << "_params";
     } else {
-      Out << "CallInst* " << iName << " = CallInst::Create("
-          << opNames[call->getNumArgOperands()] << ", \"";
+      Out << "CallInst *" << iName << " = " << BuilderName << ".CreateCall("
+          << opNames[call->getNumArgOperands()];
+      if (call->getNumArgOperands() == 1)
+        Out << ", " << opNames[0];
     }
+    Out << ", \"";
     printEscapedString(call->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     nl(Out) << iName << "->setCallingConv(";
     printCallingConv(call->getCallingConv());
     Out << ");";
