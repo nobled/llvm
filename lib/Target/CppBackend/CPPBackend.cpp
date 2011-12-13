@@ -1354,27 +1354,27 @@ void CppWriter::printInstruction(const Instruction *I,
   case Instruction::PtrToInt:
   case Instruction::IntToPtr:
   case Instruction::BitCast: {
-    const CastInst* cst = cast<CastInst>(I);
-    Out << "CastInst* " << iName << " = new ";
+    const CastInst *cst = cast<CastInst>(I);
+    Out << "Value *" << iName << " = " << BuilderName << ".Create";
     switch (I->getOpcode()) {
-    case Instruction::Trunc:    Out << "TruncInst"; break;
-    case Instruction::ZExt:     Out << "ZExtInst"; break;
-    case Instruction::SExt:     Out << "SExtInst"; break;
-    case Instruction::FPTrunc:  Out << "FPTruncInst"; break;
-    case Instruction::FPExt:    Out << "FPExtInst"; break;
-    case Instruction::FPToUI:   Out << "FPToUIInst"; break;
-    case Instruction::FPToSI:   Out << "FPToSIInst"; break;
-    case Instruction::UIToFP:   Out << "UIToFPInst"; break;
-    case Instruction::SIToFP:   Out << "SIToFPInst"; break;
-    case Instruction::PtrToInt: Out << "PtrToIntInst"; break;
-    case Instruction::IntToPtr: Out << "IntToPtrInst"; break;
-    case Instruction::BitCast:  Out << "BitCastInst"; break;
-    default: assert(0 && "Unreachable"); break;
+    case Instruction::Trunc:    Out << "Trunc"; break;
+    case Instruction::ZExt:     Out << "ZExt"; break;
+    case Instruction::SExt:     Out << "SExt"; break;
+    case Instruction::FPTrunc:  Out << "FPTrunc"; break;
+    case Instruction::FPExt:    Out << "FPExt"; break;
+    case Instruction::FPToUI:   Out << "FPToUI"; break;
+    case Instruction::FPToSI:   Out << "FPToSI"; break;
+    case Instruction::UIToFP:   Out << "UIToFP"; break;
+    case Instruction::SIToFP:   Out << "SIToFP"; break;
+    case Instruction::PtrToInt: Out << "PtrToInt"; break;
+    case Instruction::IntToPtr: Out << "IntToPtr"; break;
+    case Instruction::BitCast:  Out << "BitCast"; break;
+    default: llvm_unreachable("Bad CastInst opcode!"); break;
     }
     Out << "(" << opNames[0] << ", "
         << getCppName(cst->getType()) << ", \"";
     printEscapedString(cst->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     break;
   }
   case Instruction::Call: {
