@@ -1199,27 +1199,31 @@ void CppWriter::printInstruction(const Instruction *I,
     break;
   }
   case Instruction::FCmp: {
-    Out << "FCmpInst* " << iName << " = new FCmpInst(*" << bbname << ", ";
+    Out << "Value *" << iName << " = " << BuilderName << ".CreateFCmp";
+    StringRef Pred;
     switch (cast<FCmpInst>(I)->getPredicate()) {
-    case FCmpInst::FCMP_FALSE: Out << "FCmpInst::FCMP_FALSE"; break;
-    case FCmpInst::FCMP_OEQ  : Out << "FCmpInst::FCMP_OEQ"; break;
-    case FCmpInst::FCMP_OGT  : Out << "FCmpInst::FCMP_OGT"; break;
-    case FCmpInst::FCMP_OGE  : Out << "FCmpInst::FCMP_OGE"; break;
-    case FCmpInst::FCMP_OLT  : Out << "FCmpInst::FCMP_OLT"; break;
-    case FCmpInst::FCMP_OLE  : Out << "FCmpInst::FCMP_OLE"; break;
-    case FCmpInst::FCMP_ONE  : Out << "FCmpInst::FCMP_ONE"; break;
-    case FCmpInst::FCMP_ORD  : Out << "FCmpInst::FCMP_ORD"; break;
-    case FCmpInst::FCMP_UNO  : Out << "FCmpInst::FCMP_UNO"; break;
-    case FCmpInst::FCMP_UEQ  : Out << "FCmpInst::FCMP_UEQ"; break;
-    case FCmpInst::FCMP_UGT  : Out << "FCmpInst::FCMP_UGT"; break;
-    case FCmpInst::FCMP_UGE  : Out << "FCmpInst::FCMP_UGE"; break;
-    case FCmpInst::FCMP_ULT  : Out << "FCmpInst::FCMP_ULT"; break;
-    case FCmpInst::FCMP_ULE  : Out << "FCmpInst::FCMP_ULE"; break;
-    case FCmpInst::FCMP_UNE  : Out << "FCmpInst::FCMP_UNE"; break;
-    case FCmpInst::FCMP_TRUE : Out << "FCmpInst::FCMP_TRUE"; break;
-    default: Out << "FCmpInst::BAD_ICMP_PREDICATE"; break;
+    case FCmpInst::FCMP_FALSE: Pred = "(FCmpInst::FCMP_FALSE, "; break;
+    case FCmpInst::FCMP_OEQ  : Pred = "OEQ("; break;
+    case FCmpInst::FCMP_OGT  : Pred = "OGT("; break;
+    case FCmpInst::FCMP_OGE  : Pred = "OGE("; break;
+    case FCmpInst::FCMP_OLT  : Pred = "OLT("; break;
+    case FCmpInst::FCMP_OLE  : Pred = "OLE("; break;
+    case FCmpInst::FCMP_ONE  : Pred = "ONE("; break;
+    case FCmpInst::FCMP_ORD  : Pred = "ORD("; break;
+    case FCmpInst::FCMP_UNO  : Pred = "UNO("; break;
+    case FCmpInst::FCMP_UEQ  : Pred = "UEQ("; break;
+    case FCmpInst::FCMP_UGT  : Pred = "UGT("; break;
+    case FCmpInst::FCMP_UGE  : Pred = "UGE("; break;
+    case FCmpInst::FCMP_ULT  : Pred = "ULT("; break;
+    case FCmpInst::FCMP_ULE  : Pred = "ULE("; break;
+    case FCmpInst::FCMP_UNE  : Pred = "UNE("; break;
+    case FCmpInst::FCMP_TRUE : Pred = "(FCmpInst::FCMP_TRUE, "; break;
+    default:
+      llvm_unreachable("Bad FCmpInst predicate!");
+      Pred = "(FCmpInst::BAD_ICMP_PREDICATE, "; break;
     }
-    Out << ", " << opNames[0] << ", " << opNames[1] << ", \"";
+
+    Out << Pred << opNames[0] << ", " << opNames[1] << ", \"";
     printEscapedString(I->getName());
     Out << "\");";
     break;
