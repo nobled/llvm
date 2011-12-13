@@ -1326,13 +1326,13 @@ void CppWriter::printInstruction(const Instruction *I,
     break;
   }
   case Instruction::PHI: {
-    const PHINode* phi = cast<PHINode>(I);
+    const PHINode *phi = cast<PHINode>(I);
 
-    Out << "PHINode* " << iName << " = PHINode::Create("
+    Out << "PHINode *" << iName << " = " << BuilderName << ".CreatePHI("
         << getCppName(phi->getType()) << ", "
         << phi->getNumIncomingValues() << ", \"";
     printEscapedString(phi->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     nl(Out);
     for (unsigned i = 0; i < phi->getNumIncomingValues(); ++i) {
       Out << iName << "->addIncoming("
