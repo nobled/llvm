@@ -1252,26 +1252,28 @@ void CppWriter::printInstruction(const Instruction *I,
     break;
   }
   case Instruction::Alloca: {
-    const AllocaInst* allocaI = cast<AllocaInst>(I);
-    Out << "AllocaInst* " << iName << " = new AllocaInst("
+    const AllocaInst *allocaI = cast<AllocaInst>(I);
+    Out << "AllocaInst *" << iName << " = " << BuilderName << ".CreateAlloca("
         << getCppName(allocaI->getAllocatedType()) << ", ";
     if (allocaI->isArrayAllocation())
-      Out << opNames[0] << ", ";
-    Out << "\"";
+      Out << opNames[0];
+    else
+      Out << "NULL";
+    Out << ", \"";
     printEscapedString(allocaI->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     if (allocaI->getAlignment())
       nl(Out) << iName << "->setAlignment("
           << allocaI->getAlignment() << ");";
     break;
   }
   case Instruction::Load: {
-    const LoadInst* load = cast<LoadInst>(I);
-    Out << "LoadInst* " << iName << " = new LoadInst("
-        << opNames[0] << ", \"";
+    const LoadInst *load = cast<LoadInst>(I);
+    Out << "LoadInst *" << iName << " = " << BuilderName << ".CreateLoad("
+        << opNames[0] << ", /*isVolatile=*/";
+    Out << (load->isVolatile() ? "true" : "false" ) << ", \"";
     printEscapedString(load->getName());
-    Out << "\", " << (load->isVolatile() ? "true" : "false" )
-        << ", " << bbname << ");";
+    Out << "\");";
     if (load->getAlignment())
       nl(Out) << iName << "->setAlignment("
               << load->getAlignment() << ");";
@@ -1284,12 +1286,12 @@ void CppWriter::printInstruction(const Instruction *I,
     break;
   }
   case Instruction::Store: {
-    const StoreInst* store = cast<StoreInst>(I);
-    Out << "StoreInst* " << iName << " = new StoreInst("
+    const StoreInst *store = cast<StoreInst>(I);
+    Out << "StoreInst *" << iName << " = " << BuilderName << ".CreateStore("
         << opNames[0] << ", "
         << opNames[1] << ", "
-        << (store->isVolatile() ? "true" : "false")
-        << ", " << bbname << ");";
+        << "/*isVolatile=*/" << (store->isVolatile() ? "true" : "false")
+        << ");";
     if (store->getAlignment())
       nl(Out) << iName << "->setAlignment("
               << store->getAlignment() << ");";
