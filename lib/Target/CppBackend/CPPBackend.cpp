@@ -153,7 +153,8 @@ namespace {
     void printFunctionUses(const Function *F);
     void printFunctionHead(const Function *F);
     void printFunctionBody(const Function *F);
-    void printInstruction(const Instruction *I, const std::string& bbname);
+    void printInstruction(const Instruction *I, StringRef bbname,
+                          StringRef BuilderName);
     std::string getOpName(const Value*);
 
     void printModuleBody();
@@ -1039,7 +1040,8 @@ static StringRef ConvertAtomicSynchScope(SynchronizationScope SynchScope) {
 
 // printInstruction - This member is called for each Instruction in a function.
 void CppWriter::printInstruction(const Instruction *I,
-                                 const std::string& bbname) {
+                                 StringRef bbname,
+                                 StringRef BuilderName) {
   std::string iName(getCppName(I));
 
   // Before we emit this instruction, we need to take care of generating any
@@ -1050,30 +1052,34 @@ void CppWriter::printInstruction(const Instruction *I,
     opNames[i] = getOpName(I->getOperand(i));
 
   switch (I->getOpcode()) {
-  default:
+  default: // XXX: remove default case to enable compile-time warnings
     error("Invalid instruction");
     break;
 
   case Instruction::Ret: {
-    const ReturnInst* ret =  cast<ReturnInst>(I);
-    Out << "ReturnInst::Create(mod->getContext(), "
-        << (ret->getReturnValue() ? opNames[0] + ", " : "") << bbname << ");";
+    const ReturnInst *ret = cast<ReturnInst>(I);
+    Out << "ReturnInst *" << iName << " = " << BuilderName << ".CreateRet"
+        << (ret->getReturnValue() ? "(" + opNames[0] : "Void(") << ");";
     break;
   }
   case Instruction::Br: {
-    const BranchInst* br = cast<BranchInst>(I);
-    Out << "BranchInst::Create(" ;
+    const BranchInst *br = cast<BranchInst>(I);
+    Out << "BranchInst *" << iName << " = " << BuilderName << ".Create";
     if (br->getNumOperands() == 3) {
-      Out << opNames[2] << ", "
-          << opNames[1] << ", "
-          << opNames[0] << ", ";
+      // BranchInst operands are in a weird order.
+      // See the constructor in lib/VMCore/Instructions.cpp
+      // and comments in include/llvm/Instructions.h.
+      Out << "CondBr("
+          << opNames[0] << ", " // Condition
+          << opNames[2] << ", " // Destination if true
+          << opNames[1];        // Destination if false
 
     } else if (br->getNumOperands() == 1) {
-      Out << opNames[0] << ", ";
+      Out << "Br(" << opNames[0]; // Unconditional destination
     } else {
       error("Branch with 2 operands?");
     }
-    Out << bbname << ");";
+    Out << ");";
     break;
   }
   case Instruction::Switch: {
@@ -1737,17 +1743,23 @@ void CppWriter::printFunctionBody(const Function *F) {
     nl(Out);
   }
 
+  const std::string BuilderName = "Builder";
+  nl(Out) << "// Preserve names, and disable all constant folding.";
+  nl(Out) << "IRBuilder<true, NoFolder> "
+          << BuilderName << "(mod->getContext());";
+
   // Output all of its basic blocks... for the function
   for (Function::const_iterator BI = F->begin(), BE = F->end();
        BI != BE; ++BI) {
-    std::string bbname(getCppName(BI));
+    const std::string bbname(getCppName(BI));
     nl(Out) << "// Block " << BI->getName() << " (" << bbname << ")";
+    nl(Out) << BuilderName << ".SetInsertPoint(" << bbname << ")";
     nl(Out);
 
     // Output all of the instructions in the basic block...
     for (BasicBlock::const_iterator I = BI->begin(), E = BI->end();
          I != E; ++I) {
-      printInstruction(I,bbname);
+      printInstruction(I, bbname, BuilderName);
     }
   }
 
@@ -1859,8 +1871,10 @@ void CppWriter::printProgram(const std::string& fname,
   Out << "#include <llvm/BasicBlock.h>\n";
   Out << "#include <llvm/Instructions.h>\n";
   Out << "#include <llvm/InlineAsm.h>\n";
+  Out << "#include <llvm/Support/IRBuilder.h>\n";
   Out << "#include <llvm/Support/FormattedStream.h>\n";
   Out << "#include <llvm/Support/MathExtras.h>\n";
+  Out << "#include <llvm/Support/NoFolder.h>\n";
   Out << "#include <llvm/Pass.h>\n";
   Out << "#include <llvm/PassManager.h>\n";
   Out << "#include <llvm/ADT/SmallVector.h>\n";
