@@ -1507,21 +1507,19 @@ void CppWriter::printInstruction(const Instruction *I,
     const FenceInst *fi = cast<FenceInst>(I);
     StringRef Ordering = ConvertAtomicOrdering(fi->getOrdering());
     StringRef CrossThread = ConvertAtomicSynchScope(fi->getSynchScope());
-    Out << "FenceInst* " << iName
-        << " = new FenceInst(mod->getContext(), "
-        << Ordering << ", " << CrossThread << ", " << bbname
-        << ");";
+    Out << "FenceInst *" << iName
+        << " = " << BuilderName << ".CreateFence("
+        << Ordering << ", " << CrossThread << ");";
     break;
   }
   case Instruction::AtomicCmpXchg: {
     const AtomicCmpXchgInst *cxi = cast<AtomicCmpXchgInst>(I);
     StringRef Ordering = ConvertAtomicOrdering(cxi->getOrdering());
     StringRef CrossThread = ConvertAtomicSynchScope(cxi->getSynchScope());
-    Out << "AtomicCmpXchgInst* " << iName
-        << " = new AtomicCmpXchgInst("
+    Out << "AtomicCmpXchgInst *" << iName
+        << " = " << BuilderName << ".CreateAtomicCmpXchg("
         << opNames[0] << ", " << opNames[1] << ", " << opNames[2] << ", "
-        << Ordering << ", " << CrossThread << ", " << bbname
-        << ");";
+        << Ordering << ", " << CrossThread << ");";
     nl(Out) << iName << "->setName(\"";
     printEscapedString(cxi->getName());
     Out << "\");";
