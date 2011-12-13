@@ -1084,10 +1084,10 @@ void CppWriter::printInstruction(const Instruction *I,
   }
   case Instruction::Switch: {
     const SwitchInst *SI = cast<SwitchInst>(I);
-    Out << "SwitchInst* " << iName << " = SwitchInst::Create("
+    Out << "SwitchInst *" << iName << " = " << BuilderName << ".CreateSwitch("
         << getOpName(SI->getCondition()) << ", "
         << getOpName(SI->getDefaultDest()) << ", "
-        << SI->getNumCases() << ", " << bbname << ");";
+        << SI->getNumCases() << ");";
     nl(Out);
     unsigned NumCases = SI->getNumCases();
     for (unsigned i = 1; i < NumCases; ++i) {
@@ -1102,7 +1102,8 @@ void CppWriter::printInstruction(const Instruction *I,
   }
   case Instruction::IndirectBr: {
     const IndirectBrInst *IBI = cast<IndirectBrInst>(I);
-    Out << "IndirectBrInst *" << iName << " = IndirectBrInst::Create("
+    Out << "IndirectBrInst *" << iName << " = "
+        << BuilderName << ".CreateIndirectBr("
         << opNames[0] << ", " << IBI->getNumDestinations() << ");";
     nl(Out);
     for (unsigned i = 1; i != IBI->getNumOperands(); ++i) {
