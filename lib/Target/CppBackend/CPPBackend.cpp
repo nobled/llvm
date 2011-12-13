@@ -1419,11 +1419,12 @@ void CppWriter::printInstruction(const Instruction *I,
     break;
   }
   case Instruction::Select: {
-    const SelectInst* sel = cast<SelectInst>(I);
-    Out << "SelectInst* " << getCppName(sel) << " = SelectInst::Create(";
+    const SelectInst *sel = cast<SelectInst>(I);
+    Out << "SelectInst *" << getCppName(sel) << " = "
+        << BuilderName << ".CreateSelect(";
     Out << opNames[0] << ", " << opNames[1] << ", " << opNames[2] << ", \"";
     printEscapedString(sel->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     break;
   }
   case Instruction::UserOp1:
@@ -1433,38 +1434,39 @@ void CppWriter::printInstruction(const Instruction *I,
     break;
   }
   case Instruction::VAArg: {
-    const VAArgInst* va = cast<VAArgInst>(I);
-    Out << "VAArgInst* " << getCppName(va) << " = new VAArgInst("
+    const VAArgInst *va = cast<VAArgInst>(I);
+    Out << "VAArgInst *" << getCppName(va) << " = "
+        << BuilderName << ".CreateVAArg("
         << opNames[0] << ", " << getCppName(va->getType()) << ", \"";
     printEscapedString(va->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     break;
   }
   case Instruction::ExtractElement: {
-    const ExtractElementInst* eei = cast<ExtractElementInst>(I);
-    Out << "ExtractElementInst* " << getCppName(eei)
-        << " = new ExtractElementInst(" << opNames[0]
+    const ExtractElementInst *eei = cast<ExtractElementInst>(I);
+    Out << "ExtractElementInst *" << getCppName(eei)
+        << BuilderName << ".CreateExtractElement(" << opNames[0]
         << ", " << opNames[1] << ", \"";
     printEscapedString(eei->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     break;
   }
   case Instruction::InsertElement: {
-    const InsertElementInst* iei = cast<InsertElementInst>(I);
-    Out << "InsertElementInst* " << getCppName(iei)
-        << " = InsertElementInst::Create(" << opNames[0]
+    const InsertElementInst *iei = cast<InsertElementInst>(I);
+    Out << "InsertElementInst *" << getCppName(iei)
+        << BuilderName << ".CreateInsertElement(" << opNames[0]
         << ", " << opNames[1] << ", " << opNames[2] << ", \"";
     printEscapedString(iei->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     break;
   }
   case Instruction::ShuffleVector: {
-    const ShuffleVectorInst* svi = cast<ShuffleVectorInst>(I);
-    Out << "ShuffleVectorInst* " << getCppName(svi)
-        << " = new ShuffleVectorInst(" << opNames[0]
+    const ShuffleVectorInst *svi = cast<ShuffleVectorInst>(I);
+    Out << "ShuffleVectorInst *" << getCppName(svi)
+        << BuilderName << ".CreateShuffleVector(" << opNames[0]
         << ", " << opNames[1] << ", " << opNames[2] << ", \"";
     printEscapedString(svi->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     break;
   }
   case Instruction::ExtractValue: {
