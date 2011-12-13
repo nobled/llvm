@@ -1113,8 +1113,8 @@ void CppWriter::printInstruction(const Instruction *I,
     break;
   }
   case Instruction::Resume: {
-    Out << "ResumeInst::Create(" << opNames[0]
-        << ", " << bbname << ");";
+    Out << "ResumeInst *" << iName << " = " << BuilderName << ".CreateResume("
+        << opNames[0] << ");";
     break;
   }
   case Instruction::Invoke: {
@@ -1126,14 +1126,14 @@ void CppWriter::printInstruction(const Instruction *I,
           << getOpName(inv->getArgOperand(i)) << ");";
       nl(Out);
     }
-    // FIXME: This shouldn't use magic numbers -3, -2, and -1.
-    Out << "InvokeInst *" << iName << " = InvokeInst::Create("
+    Out << "InvokeInst *" << iName << " = "
+        << BuilderName << ".CreateInvoke("
         << getOpName(inv->getCalledFunction()) << ", "
         << getOpName(inv->getNormalDest()) << ", "
         << getOpName(inv->getUnwindDest()) << ", "
         << iName << "_params, \"";
     printEscapedString(inv->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     nl(Out) << iName << "->setCallingConv(";
     printCallingConv(inv->getCallingConv());
     Out << ");";
