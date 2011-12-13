@@ -1171,31 +1171,31 @@ void CppWriter::printInstruction(const Instruction *I,
   case Instruction::Shl:
   case Instruction::LShr:
   case Instruction::AShr:{
-    Out << "BinaryOperator* " << iName << " = BinaryOperator::Create(";
+    Out << "Value *" << iName << " = " << BuilderName << ".Create";
     switch (I->getOpcode()) {
-    case Instruction::Add: Out << "Instruction::Add"; break;
-    case Instruction::FAdd: Out << "Instruction::FAdd"; break;
-    case Instruction::Sub: Out << "Instruction::Sub"; break;
-    case Instruction::FSub: Out << "Instruction::FSub"; break;
-    case Instruction::Mul: Out << "Instruction::Mul"; break;
-    case Instruction::FMul: Out << "Instruction::FMul"; break;
-    case Instruction::UDiv:Out << "Instruction::UDiv"; break;
-    case Instruction::SDiv:Out << "Instruction::SDiv"; break;
-    case Instruction::FDiv:Out << "Instruction::FDiv"; break;
-    case Instruction::URem:Out << "Instruction::URem"; break;
-    case Instruction::SRem:Out << "Instruction::SRem"; break;
-    case Instruction::FRem:Out << "Instruction::FRem"; break;
-    case Instruction::And: Out << "Instruction::And"; break;
-    case Instruction::Or:  Out << "Instruction::Or";  break;
-    case Instruction::Xor: Out << "Instruction::Xor"; break;
-    case Instruction::Shl: Out << "Instruction::Shl"; break;
-    case Instruction::LShr:Out << "Instruction::LShr"; break;
-    case Instruction::AShr:Out << "Instruction::AShr"; break;
-    default: Out << "Instruction::BadOpCode"; break;
+    case Instruction::Add: Out << "Add"; break;
+    case Instruction::FAdd: Out << "FAdd"; break;
+    case Instruction::Sub: Out << "Sub"; break;
+    case Instruction::FSub: Out << "FSub"; break;
+    case Instruction::Mul: Out << "Mul"; break;
+    case Instruction::FMul: Out << "FMul"; break;
+    case Instruction::UDiv:Out << "UDiv"; break;
+    case Instruction::SDiv:Out << "SDiv"; break;
+    case Instruction::FDiv:Out << "FDiv"; break;
+    case Instruction::URem:Out << "URem"; break;
+    case Instruction::SRem:Out << "SRem"; break;
+    case Instruction::FRem:Out << "FRem"; break;
+    case Instruction::And: Out << "And"; break;
+    case Instruction::Or:  Out << "Or";  break;
+    case Instruction::Xor: Out << "Xor"; break;
+    case Instruction::Shl: Out << "Shl"; break;
+    case Instruction::LShr:Out << "LShr"; break;
+    case Instruction::AShr:Out << "AShr"; break;
+    default: llvm_unreachable("Bad opcode!"); Out << "XXXBadOpCode"; break;
     }
-    Out << ", " << opNames[0] << ", " << opNames[1] << ", \"";
+    Out << "(" << opNames[0] << ", " << opNames[1] << ", \"";
     printEscapedString(I->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     break;
   }
   case Instruction::FCmp: {
