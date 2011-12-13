@@ -1173,24 +1173,15 @@ void CppWriter::printInstruction(const Instruction *I,
   case Instruction::AShr:{
     Out << "Value *" << iName << " = " << BuilderName << ".Create";
     switch (I->getOpcode()) {
-    case Instruction::Add: Out << "Add"; break;
-    case Instruction::FAdd: Out << "FAdd"; break;
-    case Instruction::Sub: Out << "Sub"; break;
-    case Instruction::FSub: Out << "FSub"; break;
-    case Instruction::Mul: Out << "Mul"; break;
-    case Instruction::FMul: Out << "FMul"; break;
-    case Instruction::UDiv:Out << "UDiv"; break;
-    case Instruction::SDiv:Out << "SDiv"; break;
-    case Instruction::FDiv:Out << "FDiv"; break;
-    case Instruction::URem:Out << "URem"; break;
-    case Instruction::SRem:Out << "SRem"; break;
-    case Instruction::FRem:Out << "FRem"; break;
-    case Instruction::And: Out << "And"; break;
-    case Instruction::Or:  Out << "Or";  break;
-    case Instruction::Xor: Out << "Xor"; break;
-    case Instruction::Shl: Out << "Shl"; break;
-    case Instruction::LShr:Out << "LShr"; break;
-    case Instruction::AShr:Out << "AShr"; break;
+#define CASE(i) case Instruction::i: Out << #i; break
+    CASE(Add); CASE(FAdd);
+    CASE(Sub); CASE(FSub);
+    CASE(Mul); CASE(FMul);
+    CASE(UDiv); CASE(SDiv); CASE(FDiv);
+    CASE(URem); CASE(SRem); CASE(FRem);
+    CASE(And); CASE(Or); CASE(Xor);
+    CASE(Shl); CASE(LShr); CASE(AShr);
+#undef CASE
     default: llvm_unreachable("Bad opcode!"); Out << "XXXBadOpCode"; break;
     }
     Out << "(" << opNames[0] << ", " << opNames[1] << ", \"";
