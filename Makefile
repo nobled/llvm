@@ -175,16 +175,23 @@ all-local:: clean-diagnostics
 endif
 
 #------------------------------------------------------------------------
-# Make sure the generated headers are up-to-date. This must be kept in
-# sync with the AC_CONFIG_HEADER invocations in autoconf/configure.ac
+# Make sure the generated files are up-to-date. This must be kept in
+# sync with the AC_CONFIG_HEADER and AC_CONFIG_FILE invocations in
+# autoconf/configure.ac.
+# Note that Makefile.config is covered by its own separate rule
+# in Makefile.rules where it can be reused by sub-projects.
 #------------------------------------------------------------------------
 FilesToConfig := \
+  bindings/ocaml/llvm/META.llvm \
+  docs/doxygen.cfg \
   include/llvm/Config/config.h \
+  include/llvm/Config/llvm-config.h \
   include/llvm/Config/Targets.def \
   include/llvm/Config/AsmPrinters.def \
   include/llvm/Config/AsmParsers.def \
   include/llvm/Config/Disassemblers.def \
-  include/llvm/Support/DataTypes.h
+  include/llvm/Support/DataTypes.h \
+  llvm.spec
 FilesToConfigPATH  := $(addprefix $(LLVM_OBJ_ROOT)/,$(FilesToConfig))
 
 all-local:: $(FilesToConfigPATH)
