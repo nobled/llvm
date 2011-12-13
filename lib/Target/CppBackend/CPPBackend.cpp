@@ -1143,15 +1143,14 @@ void CppWriter::printInstruction(const Instruction *I,
     break;
   }
   case Instruction::Unwind: {
-    Out << "new UnwindInst("
-        << "mod->getContext(), "
-        << bbname << ");";
+    Out << "UnwindInst *" << iName << " = "
+        << BuilderName << ".Insert(new UnwindInst("
+        << BuilderName << ".getContext()));";
     break;
   }
   case Instruction::Unreachable: {
-    Out << "new UnreachableInst("
-        << "mod->getContext(), "
-        << bbname << ");";
+    Out << "UnreachableInst *" << iName << " = "
+        << BuilderName << ".CreateUnreachable();";
     break;
   }
   case Instruction::Add:
