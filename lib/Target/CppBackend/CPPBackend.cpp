@@ -1478,12 +1478,12 @@ void CppWriter::printInstruction(const Instruction *I,
           << evi->idx_begin()[i] << ");";
       nl(Out);
     }
-    Out << "ExtractValueInst* " << getCppName(evi)
-        << " = ExtractValueInst::Create(" << opNames[0]
-        << ", "
+    Out << "Value *" << getCppName(evi)
+        << " = " << BuilderName << ".CreateExtractValue("
+        << opNames[0] << ", "
         << iName << "_indices, \"";
     printEscapedString(evi->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     break;
   }
   case Instruction::InsertValue: {
@@ -1495,12 +1495,12 @@ void CppWriter::printInstruction(const Instruction *I,
           << ivi->idx_begin()[i] << ");";
       nl(Out);
     }
-    Out << "InsertValueInst* " << getCppName(ivi)
-        << " = InsertValueInst::Create(" << opNames[0]
-        << ", " << opNames[1] << ", "
+    Out << "Value *" << getCppName(ivi)
+        << " = " << BuilderName << ".CreateInsertValue("
+        << opNames[0] << ", " << opNames[1] << ", "
         << iName << "_indices, \"";
     printEscapedString(ivi->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\");";
     break;
   }
   case Instruction::Fence: {
