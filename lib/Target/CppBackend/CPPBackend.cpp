@@ -1106,7 +1106,7 @@ void CppWriter::printInstruction(const Instruction *I,
     break;
   }
   case Instruction::Resume: {
-    Out << "ResumeInst::Create(mod->getContext(), " << opNames[0]
+    Out << "ResumeInst::Create(" << opNames[0]
         << ", " << bbname << ");";
     break;
   }
