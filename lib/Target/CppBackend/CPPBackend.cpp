@@ -1229,21 +1229,24 @@ void CppWriter::printInstruction(const Instruction *I,
     break;
   }
   case Instruction::ICmp: {
-    Out << "ICmpInst* " << iName << " = new ICmpInst(*" << bbname << ", ";
+    Out << "Value *" << iName << " = " << BuilderName << ".CreateICmp";
+    StringRef Pred;
     switch (cast<ICmpInst>(I)->getPredicate()) {
-    case ICmpInst::ICMP_EQ:  Out << "ICmpInst::ICMP_EQ";  break;
-    case ICmpInst::ICMP_NE:  Out << "ICmpInst::ICMP_NE";  break;
-    case ICmpInst::ICMP_ULE: Out << "ICmpInst::ICMP_ULE"; break;
-    case ICmpInst::ICMP_SLE: Out << "ICmpInst::ICMP_SLE"; break;
-    case ICmpInst::ICMP_UGE: Out << "ICmpInst::ICMP_UGE"; break;
-    case ICmpInst::ICMP_SGE: Out << "ICmpInst::ICMP_SGE"; break;
-    case ICmpInst::ICMP_ULT: Out << "ICmpInst::ICMP_ULT"; break;
-    case ICmpInst::ICMP_SLT: Out << "ICmpInst::ICMP_SLT"; break;
-    case ICmpInst::ICMP_UGT: Out << "ICmpInst::ICMP_UGT"; break;
-    case ICmpInst::ICMP_SGT: Out << "ICmpInst::ICMP_SGT"; break;
-    default: Out << "ICmpInst::BAD_ICMP_PREDICATE"; break;
+    case ICmpInst::ICMP_EQ:  Pred = "EQ(";  break;
+    case ICmpInst::ICMP_NE:  Pred = "NE(";  break;
+    case ICmpInst::ICMP_ULE: Pred = "ULE("; break;
+    case ICmpInst::ICMP_SLE: Pred = "SLE("; break;
+    case ICmpInst::ICMP_UGE: Pred = "UGE("; break;
+    case ICmpInst::ICMP_SGE: Pred = "SGE("; break;
+    case ICmpInst::ICMP_ULT: Pred = "ULT("; break;
+    case ICmpInst::ICMP_SLT: Pred = "SLT("; break;
+    case ICmpInst::ICMP_UGT: Pred = "UGT("; break;
+    case ICmpInst::ICMP_SGT: Pred = "SGT("; break;
+    default:
+      llvm_unreachable("Bad ICmpInst predicate!");
+      Pred = "(ICmpInst::BAD_ICMP_PREDICATE, "; break;
     }
-    Out << ", " << opNames[0] << ", " << opNames[1] << ", \"";
+    Out << opNames[0] << ", " << opNames[1] << ", \"";
     printEscapedString(I->getName());
     Out << "\");";
     break;
