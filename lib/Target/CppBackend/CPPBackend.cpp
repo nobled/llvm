@@ -1544,12 +1544,11 @@ void CppWriter::printInstruction(const Instruction *I,
       case AtomicRMWInst::UMin: Operation = "AtomicRMWInst::UMin"; break;
       case AtomicRMWInst::BAD_BINOP: llvm_unreachable("Bad atomic operation");
     }
-    Out << "AtomicRMWInst* " << iName
-        << " = new AtomicRMWInst("
+    Out << "AtomicRMWInst *" << iName
+        << " = " << BuilderName << ".CreateAtomicRMW("
         << Operation << ", "
         << opNames[0] << ", " << opNames[1] << ", "
-        << Ordering << ", " << CrossThread << ", " << bbname
-        << ");";
+        << Ordering << ", " << CrossThread << ");";
     nl(Out) << iName << "->setName(\"";
     printEscapedString(rmwi->getName());
     Out << "\");";
