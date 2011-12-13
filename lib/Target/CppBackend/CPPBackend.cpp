@@ -1137,6 +1137,7 @@ void CppWriter::printInstruction(const Instruction *I,
   }
   case Instruction::Unwind: {
     Out << "new UnwindInst("
+        << "mod->getContext(), "
         << bbname << ");";
     break;
   }
