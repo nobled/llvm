@@ -1333,36 +1333,32 @@ void CppWriter::printInstruction(const Instruction *I,
     }
     break;
   }
-  case Instruction::Trunc:
-  case Instruction::ZExt:
-  case Instruction::SExt:
-  case Instruction::FPTrunc:
-  case Instruction::FPExt:
-  case Instruction::FPToUI:
-  case Instruction::FPToSI:
-  case Instruction::UIToFP:
-  case Instruction::SIToFP:
-  case Instruction::PtrToInt:
-  case Instruction::IntToPtr:
-  case Instruction::BitCast: {
+#define HANDLE_CAST_INST(num, opcode, Class) case Instruction::opcode:
+#include "llvm/Instruction.def"
+    {
     const CastInst *cst = cast<CastInst>(I);
     Out << "Value *" << iName << " = " << BuilderName << ".Create";
-    switch (I->getOpcode()) {
-    case Instruction::Trunc:    Out << "Trunc"; break;
-    case Instruction::ZExt:     Out << "ZExt"; break;
-    case Instruction::SExt:     Out << "SExt"; break;
-    case Instruction::FPTrunc:  Out << "FPTrunc"; break;
-    case Instruction::FPExt:    Out << "FPExt"; break;
-    case Instruction::FPToUI:   Out << "FPToUI"; break;
-    case Instruction::FPToSI:   Out << "FPToSI"; break;
-    case Instruction::UIToFP:   Out << "UIToFP"; break;
-    case Instruction::SIToFP:   Out << "SIToFP"; break;
-    case Instruction::PtrToInt: Out << "PtrToInt"; break;
-    case Instruction::IntToPtr: Out << "IntToPtr"; break;
-    case Instruction::BitCast:  Out << "BitCast"; break;
-    default: llvm_unreachable("Bad CastInst opcode!"); break;
+    StringRef Op;
+    switch ((Instruction::CastOps)I->getOpcode()) {
+    case Instruction::Trunc:    Op = "Trunc"; break;
+    case Instruction::ZExt:     Op = "ZExt"; break;
+    case Instruction::SExt:     Op = "SExt"; break;
+    case Instruction::FPTrunc:  Op = "FPTrunc"; break;
+    case Instruction::FPExt:    Op = "FPExt"; break;
+    case Instruction::FPToUI:   Op = "FPToUI"; break;
+    case Instruction::FPToSI:   Op = "FPToSI"; break;
+    case Instruction::UIToFP:   Op = "UIToFP"; break;
+    case Instruction::SIToFP:   Op = "SIToFP"; break;
+    case Instruction::PtrToInt: Op = "PtrToInt"; break;
+    case Instruction::IntToPtr: Op = "IntToPtr"; break;
+    case Instruction::BitCast:  Op = "BitCast"; break;
+    case Instruction::CastOpsEnd: /*unreachable*/ break;
     }
-    Out << "(" << opNames[0] << ", "
+    if (Op.empty()) {
+      llvm_unreachable("Bad CastInst opcode!");
+      Op = "XXXBadCastOpcode";
+    }
+    Out << Op << "(" << opNames[0] << ", "
         << getCppName(cst->getType()) << ", \"";
     printEscapedString(cst->getName());
     Out << "\");";
