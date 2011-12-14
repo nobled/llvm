@@ -1290,11 +1290,10 @@ void CppWriter::printInstruction(const Instruction *I,
   }
   case Instruction::GetElementPtr: {
     const GetElementPtrInst* gep = cast<GetElementPtrInst>(I);
-    if (gep->getNumOperands() <= 2) {
+    assert(gep->getNumOperands() >= 2);
+    if (gep->getNumOperands() == 2) {
       Out << "GetElementPtrInst* " << iName << " = GetElementPtrInst::Create("
-          << opNames[0];
-      if (gep->getNumOperands() == 2)
-        Out << ", " << opNames[1];
+          << opNames[0] << ", " << opNames[1];
     } else {
       Out << "std::vector<Value*> " << iName << "_indices;";
       nl(Out);
