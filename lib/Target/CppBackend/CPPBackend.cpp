@@ -1296,7 +1296,8 @@ void CppWriter::printInstruction(const Instruction *I,
     const GetElementPtrInst* gep = cast<GetElementPtrInst>(I);
     assert(gep->getNumOperands() >= 2);
     if (gep->getNumOperands() == 2) {
-      Out << "GetElementPtrInst* " << iName << " = GetElementPtrInst::Create("
+      Out << "GetElementPtrInst *" << iName << " = "
+          << BuilderName << ".CreateGEP("
           << opNames[0] << ", " << opNames[1];
     } else {
       Out << "std::vector<Value*> " << iName << "_indices;";
@@ -1306,12 +1307,13 @@ void CppWriter::printInstruction(const Instruction *I,
             << opNames[i] << ");";
         nl(Out);
       }
-      Out << "Instruction* " << iName << " = GetElementPtrInst::Create("
+      Out << "GetElementPtrInst *" << iName << " = "
+          << BuilderName << ".CreateGEP("
           << opNames[0] << ", " << iName << "_indices";
     }
     Out << ", \"";
     printEscapedString(gep->getName());
-    Out << "\", " << BuilderName << ".GetInsertBlock());";
+    Out << "\");";
     break;
   }
   case Instruction::PHI: {
