@@ -1753,7 +1753,7 @@ void CppWriter::printFunctionBody(const Function *F) {
        BI != BE; ++BI) {
     const std::string bbname(getCppName(BI));
     nl(Out) << "// Block " << BI->getName() << " (" << bbname << ")";
-    nl(Out) << BuilderName << ".SetInsertPoint(" << bbname << ")";
+    nl(Out) << BuilderName << ".SetInsertPoint(" << bbname << ");";
     nl(Out);
 
     // Output all of the instructions in the basic block...
