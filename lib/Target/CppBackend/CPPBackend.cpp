@@ -153,8 +153,7 @@ namespace {
     void printFunctionUses(const Function *F);
     void printFunctionHead(const Function *F);
     void printFunctionBody(const Function *F);
-    void printInstruction(const Instruction *I, StringRef bbname,
-                          StringRef BuilderName);
+    void printInstruction(const Instruction *I, StringRef BuilderName);
     std::string getOpName(const Value*);
 
     void printModuleBody();
@@ -1040,7 +1039,6 @@ static StringRef ConvertAtomicSynchScope(SynchronizationScope SynchScope) {
 
 // printInstruction - This member is called for each Instruction in a function.
 void CppWriter::printInstruction(const Instruction *I,
-                                 StringRef bbname,
                                  StringRef BuilderName) {
   std::string iName(getCppName(I));
 
@@ -1313,7 +1311,7 @@ void CppWriter::printInstruction(const Instruction *I,
     }
     Out << ", \"";
     printEscapedString(gep->getName());
-    Out << "\", " << bbname << ");";
+    Out << "\", " << BuilderName << ".GetInsertBlock());";
     break;
   }
   case Instruction::PHI: {
@@ -1754,7 +1752,7 @@ void CppWriter::printFunctionBody(const Function *F) {
     // Output all of the instructions in the basic block...
     for (BasicBlock::const_iterator I = BI->begin(), E = BI->end();
          I != E; ++I) {
-      printInstruction(I, bbname, BuilderName);
+      printInstruction(I, BuilderName);
     }
   }
 
