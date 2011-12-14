@@ -1,5 +1,5 @@
 ; RUN: llc < %s -march=cpp -cppgen=program -o %t
-; RUN: grep "BranchInst::Create(label_if_then, label_if_end, int1_cmp, label_entry);" %t
+; RUN: grep "\.CreateCondBr(int1_cmp, label_if_then, label_if_end);" %t
 
 define i32 @some_func(i32 %a) nounwind {
 entry:
