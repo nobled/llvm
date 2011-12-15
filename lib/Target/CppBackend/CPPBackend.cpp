@@ -341,7 +341,10 @@ std::string CppWriter::getCppName(Type* Ty) {
     case Type::X86_FP80TyID: return "Type::getX86_FP80Ty(mod->getContext())";
     case Type::FloatTyID:    return "Type::getFloatTy(mod->getContext())";
     case Type::DoubleTyID:   return "Type::getDoubleTy(mod->getContext())";
+    case Type::FP128TyID:    return "Type::getFP128Ty(mod->getContext())";
+    case Type::PPC_FP128TyID:return "Type::getPPC_FP128Ty(mod->getContext())";
     case Type::LabelTyID:    return "Type::getLabelTy(mod->getContext())";
+    case Type::MetadataTyID: return "Type::getMetadataTy(mod->getContext())";
     case Type::X86_MMXTyID:  return "Type::getX86_MMXTy(mod->getContext())";
     default:
       error("Invalid primitive type");
