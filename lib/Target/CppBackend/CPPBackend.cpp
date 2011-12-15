@@ -1235,7 +1235,7 @@ void CppWriter::printInstruction(const Instruction *I,
       llvm_unreachable("Bad ICmpInst predicate!");
       Pred = "(ICmpInst::BAD_ICMP_PREDICATE, "; break;
     }
-    Out << opNames[0] << ", " << opNames[1] << ", \"";
+    Out << Pred << opNames[0] << ", " << opNames[1] << ", \"";
     printEscapedString(I->getName());
     Out << "\");";
     break;
